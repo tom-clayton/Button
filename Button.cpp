@@ -43,26 +43,27 @@ void Button::poll()
     // check de-bounce lock:
     if (!debounce_lock_){
 
-		// poll button state:
-		bool current_state = digitalRead(pin_);
+        // poll button state:
+        bool current_state = digitalRead(pin_);
 
         // check for button press:
-		if (current_state == 0 && prev_state_ == 1){
-            	press_timer_ = millis();
-            	long_press_ = false;
-		}
+        if (current_state == 0 && prev_state_ == 1){
+            press_timer_ = millis();
+            long_press_ = false;
+        }
 
-		// check if button released before long press flagged:
-		else if (current_state == 1 && prev_state_ == 0 && !long_press_
-                                        && short_press_function_ != NULL) {
-                short_press_function_();
-		}
+        // check if button released before long press flagged:
+        else if (current_state == 1 && prev_state_ == 0 && !long_press_
+                 && short_press_function_ != NULL) {
+            short_press_function_();
+        }
 
-		// check for button held long enough for long press:
-		else if (current_state == 0 && !long_press_ && (uint32_t)(millis() - press_timer_) > long_press_timeout_
-                                        && long_press_function_ != NULL) {
-                long_press_function_();
-                long_press_ = true;
+        // check for button held long enough for long press:
+        else if (current_state == 0 && !long_press_ 
+                 && (uint32_t)(millis() - press_timer_) > long_press_timeout_
+                 && long_press_function_ != NULL) {
+            long_press_function_();
+            long_press_ = true;
         }
 
         // set the de-bounce lock if state changes:
@@ -70,13 +71,14 @@ void Button::poll()
             debounce_timer_ = millis();
             debounce_lock_ = true;
         }
+        
         // update previous state:
-		prev_state_ = current_state;
-	}
-	// unlock de-bounce if time-out passed:
-	else if ((uint32_t)(millis() - debounce_timer_) > DEBOUNCE_TIMEOUT){
-		debounce_lock_ = false;
-	}
+        prev_state_ = current_state;
+    }
+    // unlock de-bounce if time-out passed:
+    else if ((uint32_t)(millis() - debounce_timer_) > DEBOUNCE_TIMEOUT){
+        debounce_lock_ = false;
+    }
 }
 
 /*
